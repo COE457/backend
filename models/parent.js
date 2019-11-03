@@ -36,7 +36,7 @@ class Parent {
 
       try {
         //  grabbing all usernames in db
-        const usernames = await db.find({
+        var usernames = await db.find({
           selector: { docType: "Parent" },
           fields: ["username"]
         });

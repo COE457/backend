@@ -20,7 +20,7 @@ const parent = require("./models").parent;
 const Parent = new parent();
 
 
-app.use('/', parentRouter);
+app.use('/API/parent', parentRouter);
 // app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
