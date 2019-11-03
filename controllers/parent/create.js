@@ -1,11 +1,17 @@
 const parent = require("../../models").parent;
 const Parent = new parent();
 
-module.exports = (req, res, next) => {
-    console.log("HERE");
-    console.log(req);
-    Parent.create(req.body).then(err => {
-        console.log("here");
-        console.log(err);
-    });
+module.exports = async (req, res, next) => {
+    console.log(req.body);
+    try {
+        const newParent = await Parent.create(req.body);
+        res.status(201).json(newParent);
+    } catch(err) {
+        res("error");
+    }  finally {
+        next();
+    }
+    
+
+
 }
