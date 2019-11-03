@@ -34,11 +34,17 @@ class Parent {
         return; //  exiting the function
       }
 
-      //  grabbing all usernames in db
-      const usernames = await db.find({
-        selector: { docType: "Parent" },
-        fields: ["username"]
-      });
+      try {
+        //  grabbing all usernames in db
+        const usernames = await db.find({
+          selector: { docType: "Parent" },
+          fields: ["username"]
+        });
+      } catch (err) { //  catch db errors
+        reject(errors.databaseError(err));
+        return;
+      }
+
 
       //  checking for duplicate username
       if (usernames.docs.map(item => item.username).includes(body.username)) {
@@ -52,8 +58,13 @@ class Parent {
       bcrypt.hash(body.password, BCRYPT_SALT_ROUNDS).then(async hash => {
         body.password = hash; //  replacing the pass
         //  adding entry to db
-        const newParent = await db.insert(body);
-        resolve(newParent); //  resolving the promise and returning newParent
+        try {
+          var newParent = await db.insert(body);
+          resolve(newParent); //  resolving the promise and returning newParent
+        } catch (err) { //  catch db errors
+          reject(errors.databaseError(err));
+          return;
+        }
       });
     });
   }
@@ -74,21 +85,37 @@ class Parent {
     return new Promise(async (resolve, reject) => {
       if (body._id && body._rev) {
         //  if id was provided
-        const deletedParent = await db.destroy(body._id, body._rev); //  directly attempt to destroy
-        resolve(deletedParent);
+        try {
+          const deletedParent = await db.destroy(body._id, body._rev); //  directly attempt to destroy
+          resolve(deletedParent);
+        } catch (err) { //  catch db errors
+          reject(errors.databaseError(err));
+          return;
+        }
       } else if (body.username) {
         //  if username but not id was provided, find id and rev
-        const target = await db.find({
-          selector: {
-            docType: "Parent",
-            username: body.username
-          },
-          fields: ["_id", "_rev"]
-        });
-        const _id = target.docs[0]._id;
-        const _rev = target.docs[0]._rev;
-        const deletedParent = await db.destroy(_id, _rev); //  attempt to destroy
-        resolve(deletedParent);
+        try {
+          const target = await db.find({
+            selector: {
+              docType: "Parent",
+              username: body.username
+            },
+            fields: ["_id", "_rev"]
+          });
+          if (target.docs.length == 0) {
+            //  reject in case of no results
+            reject(errors.notInTheDataBase(body.username));
+            return;
+          }
+          const _id = target.docs[0]._id;
+          const _rev = target.docs[0]._rev;
+          const deletedParent = await db.destroy(_id, _rev); //  attempt to destroy
+          resolve(deletedParent);
+          return;
+        } catch (err) {//  catch db errors
+          reject(errors.databaseError(err));
+        }
+
       } else {
         reject(errors.missingKeys);
       }
@@ -157,16 +184,16 @@ class Parent {
       let search = //  setting up the search term based on available data
         body._id && body._rev
           ? {
-              docType: "Parent",
-              _id: body._id
-            }
+            docType: "Parent",
+            _id: body._id
+          }
           : {
-              docType: "Parent",
-              username: body.username
-            };
-        
-        //  deleting the rev in the body to avoid conflicts 
-        delete body._rev;
+            docType: "Parent",
+            username: body.username
+          };
+
+      //  deleting the rev in the body to avoid conflicts 
+      delete body._rev;
       try {
         var target = await db //  finding Parents
           .find({
@@ -181,7 +208,7 @@ class Parent {
         }
       } catch (err) {
         //  reject in case of db errors
-        reject(err);
+        reject(errors.databaseError(err));
         return;
       } finally {
         //  in case username needs to be changed
@@ -204,7 +231,7 @@ class Parent {
         Object.keys(body).forEach(item => {
           tmpBody[item] = body[item];
         });
-        
+
         const updatedParent = await db.insert(tmpBody); //  attempt edit
         resolve(updatedParent); //  resolve and return
       }

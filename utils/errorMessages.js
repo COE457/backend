@@ -20,5 +20,11 @@ module.exports = {
             message: `${name} not in the database`,
             entry: name
         })
+    },
+    databaseError: (err) => {
+        return({
+            error: `databaseError`,
+            databaseError: err
+        })
     }
 }

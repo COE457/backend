@@ -6,12 +6,9 @@ module.exports = async (req, res, next) => {
     try {
         const newParent = await Parent.create(req.body);
         res.status(201).json(newParent);
-    } catch(err) {
+    } catch (err) {
         res("error");
-    }  finally {
+    } finally {
         next();
     }
-    
-
-
 }
