@@ -40,17 +40,25 @@ class Parent {
           selector: { docType: "Parent" },
           fields: ["username"]
         });
-      } catch (err) { //  catch db errors
+      } catch (err) {
+        //  catch db errors
         reject(errors.databaseError(err));
         return;
       }
-
 
       //  checking for duplicate username
       if (usernames.docs.map(item => item.username).includes(body.username)) {
         reject(errors.duplicate("Username", body.username)); //  reject duplicate entry
         return; //  exiting the function
       }
+
+      //  delete extra keys from body
+      let keys = Object.keys(body); //  body keys
+      keys.forEach(item => {
+        if (!this.columns.includes(item)) {
+          delete body[item]; //  if the key was not in the "restricted", delete it
+        }
+      });
 
       body.docType = "Parent"; //  adding document type to body
 
@@ -61,7 +69,8 @@ class Parent {
         try {
           var newParent = await db.insert(body);
           resolve(newParent); //  resolving the promise and returning newParent
-        } catch (err) { //  catch db errors
+        } catch (err) {
+          //  catch db errors
           reject(errors.databaseError(err));
           return;
         }
@@ -88,7 +97,8 @@ class Parent {
         try {
           const deletedParent = await db.destroy(body._id, body._rev); //  directly attempt to destroy
           resolve(deletedParent);
-        } catch (err) { //  catch db errors
+        } catch (err) {
+          //  catch db errors
           reject(errors.databaseError(err));
           return;
         }
@@ -112,10 +122,10 @@ class Parent {
           const deletedParent = await db.destroy(_id, _rev); //  attempt to destroy
           resolve(deletedParent);
           return;
-        } catch (err) {//  catch db errors
+        } catch (err) {
+          //  catch db errors
           reject(errors.databaseError(err));
         }
-
       } else {
         reject(errors.missingKeys);
       }
@@ -133,16 +143,21 @@ class Parent {
   read(body) {
     return new Promise(async (resolve, reject) => {
       if (body._id) {
-        //  if id was provided
-        const foundParent = await db.get(body._id); //  get the parent that matches the id
-        resolve(foundParent); //  return and resolve promise
-        return;
+        try {
+          //  if id was provided
+          const foundParent = await db.get(body._id); //  get the parent that matches the id
+          resolve(foundParent); //  return and resolve promise
+          return;
+        } catch (err) {
+          reject(errors.notInTheDataBase(body._id));
+          return;
+        }
       } else {
         //  if id was not provided
 
         //  setup a selector based on regex to find all similar cases
         let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")?" } };
+          return { [item]: { $regex: "(" + body[item] + ")+" } };
         });
 
         //  assemble the object array into a single object
@@ -184,15 +199,15 @@ class Parent {
       let search = //  setting up the search term based on available data
         body._id && body._rev
           ? {
-            docType: "Parent",
-            _id: body._id
-          }
+              docType: "Parent",
+              _id: body._id
+            }
           : {
-            docType: "Parent",
-            username: body.username
-          };
+              docType: "Parent",
+              username: body.username
+            };
 
-      //  deleting the rev in the body to avoid conflicts 
+      //  deleting the rev in the body to avoid conflicts
       delete body._rev;
       try {
         var target = await db //  finding Parents

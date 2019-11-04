@@ -3,9 +3,9 @@ const express = require("express");
 const path = require("path");
 
 
-
+//  importing routes
 const parentRouter = require('./routes/parent');
-// const usersRouter = require('./routes/users');
+const childRouter = require('./routes/child');
 
 const app = express();
 
@@ -16,12 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-const parent = require("./models").parent;
-const Parent = new parent();
 
 
+
+//  using routes
 app.use('/API/parent', parentRouter);
-// app.use('/users', usersRouter);
+app.use('/API/child', childRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
