@@ -198,8 +198,7 @@ class Parent {
         var target = await db //  finding Parents
           .find({
             //  find all parents with username
-            selector: search,
-            fields: ["_id", "_rev"]
+            selector: search
           });
         if (target.docs.length == 0) {
           //  reject in case of no results
