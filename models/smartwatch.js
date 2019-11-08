@@ -213,8 +213,8 @@ class Smartwatch {
       //  deleting the rev in the body to avoid conflicts
       delete body._rev;
 
-      //  deleting Parent to prevent changing parent
-      if (body.Parent) delete body.Parent;
+      //  deleting Child to prevent changing child
+      if (body.Child) delete body.Child;
 
       try {
         var target = await db //  finding Smartwatches
@@ -234,7 +234,7 @@ class Smartwatch {
       } finally {
         //  in case serialNumber needs to be changed
         if (body.newSerialNumber) {
-          body.nSerialNumber = body.newSerialNumber;
+          body.SerialNumber = body.newSerialNumber;
           delete body.newSerialNumber;
         }
 

@@ -4,7 +4,7 @@ const Smartwatch = new smartwatch();
 module.exports = async (req, res, next) => {
     try {
         const updatedSmartwatch = await Smartwatch.update(req.body);
-        res.status(201).json(updatedChild);
+        res.status(201).json(updatedSmartwatch);
     } catch (err) {
         let status =
             (err.error == "notInTheDataBase" || err.error == "missingKeys") ? 400 :
