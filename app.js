@@ -6,6 +6,7 @@ const path = require("path");
 //  importing routes
 const parentRouter = require('./routes/parent');
 const childRouter = require('./routes/child');
+const smartwatchRouter = require('./routes/smartwatch');
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //  using routes
 app.use('/API/parent', parentRouter);
 app.use('/API/child', childRouter);
+app.use('/API/smartwatch', smartwatchRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
