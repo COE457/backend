@@ -1,7 +1,7 @@
 /**
- * @file lightSensorHistory.js
+ * @file noiseLevelHistory.js
  *
- * @description used to make CRUD operations unified for all LightSensorHistory docTypes
+ * @description used to make CRUD operations unified for all NoiseLevelHistory docTypes
  */
 
 const db = require("../db"); //  for database
@@ -11,7 +11,7 @@ const errors = require("../utils/errorMessages"); //  for unified error messages
 const atmosphere = require("./atmosphere");
 const Atmosphere = new atmosphere();
 
-class LightSensorHistory {
+class NoiseLevelHistory {
   constructor() {
     //  setting the required keys
     this.columns = ["date","reading"];
@@ -23,7 +23,7 @@ class LightSensorHistory {
    * @fires db.find
    * @fires db.insert
    * @returns Promise.resolve or Promise.reject
-   * @description adds a new lightSensorHistory to the database iff the location was not a duplicate and the body contains all required keys
+   * @description adds a new noiseLevelHistory to the database iff the location was not a duplicate and the body contains all required keys
    */
 
   //  performs creation based on this.column
@@ -42,7 +42,7 @@ class LightSensorHistory {
       try {
         //  grabbing all locations in db
         var readings = await db.find({
-          selector: { docType: "LightSensorHistory" },
+          selector: { docType: "NoiseLevelHistory" },
           fields: ["date","reading"]
         });
       } catch (err) {
@@ -74,12 +74,12 @@ class LightSensorHistory {
         }
       });
 
-      body.docType = "LightSensorHistory"; //  adding document type to body
+      body.docType = "NoiseLevelHistory"; //  adding document type to body
 
       //  adding entry to db
       try {
-        var newLightSensorHistory = await db.insert(body);
-        resolve(newLightSensorHistory); //  resolving the promise and returning newLightSensorHistory
+        var newNoiseLevelHistory = await db.insert(body);
+        resolve(newNoiseLevelHistory); //  resolving the promise and returning newNoiseLevelHistory
       } catch (err) {
         //  catch db errors
         reject(errors.databaseError(err));
@@ -94,19 +94,19 @@ class LightSensorHistory {
    * @fires db.find
    * @fires db.destroy
    * @returns Promise.resolve or Promise.reject
-   * @description removes lightSensorHistory based on _id and _rev or date
+   * @description removes noiseLevelHistory based on _id and _rev or date
    *
    *
    * @todo fix warnings
-   * @todo cascade deletion when ./lightSensorHistory.js is ready
+   * @todo cascade deletion when ./noiseLevelHistory.js is ready
    */
   destroy(body) {
     return new Promise(async (resolve, reject) => {
       if (body._id && body._rev) {
         //  if id was provided
         try {
-          const deletedLightSensorHistory = await db.destroy(body._id, body._rev); //  directly attempt to destroy
-          resolve(deletedLightSensorHistory);
+          const deletedNoiseLevelHistory = await db.destroy(body._id, body._rev); //  directly attempt to destroy
+          resolve(deletedNoiseLevelHistory);
         } catch (err) {
           //  catch db errors
           reject(errors.databaseError(err));
@@ -117,7 +117,7 @@ class LightSensorHistory {
         try {
           const target = await db.find({
             selector: {
-              docType: "LightSensorHistory",
+              docType: "NoiseLevelHistory",
               location: body.date
             },
             fields: ["_id", "_rev"]
@@ -129,8 +129,8 @@ class LightSensorHistory {
           }
           const _id = target.docs[0]._id;
           const _rev = target.docs[0]._rev;
-          const deletedLightSensorHistory = await db.destroy(_id, _rev); //  attempt to destroy
-          resolve(deletedLightSensorHistory);
+          const deletedNoiseLevelHistory = await db.destroy(_id, _rev); //  attempt to destroy
+          resolve(deletedNoiseLevelHistory);
           return;
         } catch (err) {
           //  catch db errors
@@ -148,15 +148,15 @@ class LightSensorHistory {
    * @fires db.find
    * @fires db.get
    * @returns Promise.resolve
-   * @description lists lightSensorHistorys based on _id, or other attributes
+   * @description lists noiseLevelHistorys based on _id, or other attributes
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
       if (body._id) {
         try {
           //  if id was provided
-          const foundLightSensorHistory = await db.get(body._id); //  get the lightSensorHistory that matches the id
-          resolve(foundLightSensorHistory); //  return and resolve promise
+          const foundNoiseLevelHistory = await db.get(body._id); //  get the noiseLevelHistory that matches the id
+          resolve(foundNoiseLevelHistory); //  return and resolve promise
         } catch (err) {
           reject(errors.notInTheDataBase(body._id));
         }
@@ -171,12 +171,12 @@ class LightSensorHistory {
 
         //  assemble the object array into a single object
         selector = Object.assign({}, ...selector);
-        selector.docType = "LightSensorHistory"; //  search only LightSensorHistory docs
+        selector.docType = "NoiseLevelHistory"; //  search only NoiseLevelHistory docs
 
         //  add the "selector" key to the whole thing
         selector = { selector: selector };
-        const foundLightSensorHistorys = await db.find(selector); //  get all matches
-        resolve(foundLightSensorHistorys); //  return and resolve promise
+        const foundNoiseLevelHistorys = await db.find(selector); //  get all matches
+        resolve(foundNoiseLevelHistorys); //  return and resolve promise
         return;
       }
     });
@@ -188,7 +188,7 @@ class LightSensorHistory {
    * @fires db.find
    * @fires db.insert
    * @returns Promise.resolve or Promise.reject
-   * @description updates lightSensorHistory based on _id and _rev or location
+   * @description updates noiseLevelHistory based on _id and _rev or location
    */
   update(body) {
     return new Promise(async (resolve, reject) => {
@@ -202,11 +202,11 @@ class LightSensorHistory {
       let search = //  setting up the search term based on available data
         body._id && body._rev
           ? {
-              docType: "LightSensorHistory",
+              docType: "NoiseLevelHistory",
               _id: body._id
             }
           : {
-              docType: "LightSensorHistory",
+              docType: "NoiseLevelHistory",
               date: body.date,
               reading:body.reading
             };
@@ -218,9 +218,9 @@ class LightSensorHistory {
       if (body.Atmosphere) delete body.Atmosphere;
 
       try {
-        var target = await db //  finding LightSensorHistorys
+        var target = await db //  finding NoiseLevelHistorys
           .find({
-            //  find all lightSensorHistorys with location
+            //  find all noiseLevelHistorys with location
             selector: search
           });
         if (target.docs.length == 0) {
@@ -260,11 +260,11 @@ class LightSensorHistory {
           tmpBody[item] = body[item];
         });
 
-        const updatedLightSensorHistory = await db.insert(tmpBody); //  attempt edit
-        resolve(updatedLightSensorHistory); //  resolve and return
+        const updatedNoiseLevelHistory = await db.insert(tmpBody); //  attempt edit
+        resolve(updatedNoiseLevelHistory); //  resolve and return
       }
     });
   }
 }
 
-module.exports = LightSensorHistory;
+module.exports = NoiseLevelHistory;

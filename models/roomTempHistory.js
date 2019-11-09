@@ -9,7 +9,7 @@ const errors = require("../utils/errorMessages"); //  for unified error messages
 
 //  for checking if a atmosphere exists or not
 const atmosphere = require("./atmosphere");
-const atmosphere = new atmosphere();
+const Atmosphere = new atmosphere();
 
 class RoomTempHistory {
   constructor() {
