@@ -1,10 +1,10 @@
-const atmosphere = require("../../models").atmosphere;
-const Atmosphere = new atmosphere();
+const roomTempHistory = require("../../models").roomTempHistory;
+const RoomTempHistory = new roomTempHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const updatedAtmosphere = await Atmosphere.update(req.body);
-        res.status(201).json(updatedAtmosphere);
+        const updatedRoomTempHistory = await RoomTempHistory.update(req.body);
+        res.status(201).json(updatedRoomTempHistory);
     } catch (err) {
         let status =
             (err.error == "notInTheDataBase" || err.error == "missingKeys") ? 400 :

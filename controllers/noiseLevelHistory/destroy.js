@@ -1,10 +1,10 @@
-const atmosphere = require("../../models").atmosphere;
-const Atmosphere = new atmosphere();
+const noiseLevelHistory = require("../../models").noiseLevelHistory;
+const NoiseLevelHistory = new noiseLevelHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const deletedAtmosphere = await Atmosphere.destroy(req.body);
-        res.status(200).json(deletedAtmosphere);
+        const deletedNoiseLevelHistory = await NoiseLevelHistory.destroy(req.body);
+        res.status(200).json(deletedNoiseLevelHistory);
     } catch (err) {
         let status =
             (err.error == "missingKeys" || err.error == "notInTheDataBase") ? 400 :

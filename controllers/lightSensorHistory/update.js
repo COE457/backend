@@ -1,10 +1,10 @@
-const atmosphere = require("../../models").atmosphere;
-const Atmosphere = new atmosphere();
+const lightSensorHistory = require("../../models").lightSensorHistory;
+const LightSensorHistory = new lightSensorHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const updatedAtmosphere = await Atmosphere.update(req.body);
-        res.status(201).json(updatedAtmosphere);
+        const updatedLightSensorHistory = await LightSensorHistory.update(req.body);
+        res.status(201).json(updatedLightSensorHistory);
     } catch (err) {
         let status =
             (err.error == "notInTheDataBase" || err.error == "missingKeys") ? 400 :
