@@ -1,9 +1,9 @@
-const atmosphere = require("../../models").atmosphere;
-const Atmophere = new atmosphere();
+const lightSensorHistory = require("../../models").lightSensorHistory;
+const LightSensorHistory = new lightSensorHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const newAtmosphere = await Atmophere.create(req.body);
+        const newAtmosphere = await LightSensorHistory.create(req.body);
         res.status(201).json(newAtmosphere);
     } catch (err) {
         let status =
