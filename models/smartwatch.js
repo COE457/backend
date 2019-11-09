@@ -234,7 +234,7 @@ class Smartwatch {
       } finally {
         //  in case serialNumber needs to be changed
         if (body.newSerialNumber) {
-          body.SerialNumber = body.newSerialNumber;
+          body.serialNumber = body.newSerialNumber;
           delete body.newSerialNumber;
         }
 
