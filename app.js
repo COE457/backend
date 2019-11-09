@@ -8,6 +8,7 @@ const parentRouter = require('./routes/parent');
 const childRouter = require('./routes/child');
 const smartwatchRouter = require('./routes/smartwatch');
 const heartRateHistoryRouter = require('./routes/heartratehistory');
+const equipmentHistoryRouter = require('./routes/equipmenthistory');
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use('/API/parent', parentRouter);
 app.use('/API/child', childRouter);
 app.use('/API/smartwatch', smartwatchRouter);
 app.use('/API/heartratehistory', heartRateHistoryRouter);
+app.use('/API/equipmenthistory', equipmentHistoryRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

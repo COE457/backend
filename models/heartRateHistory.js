@@ -43,7 +43,7 @@ class HeartRateHistory {
         //  grabbing all readings and dates in db
         var readings = await db.find({
           selector: { docType: "HeartRateHistory" },
-          fields: ["reading","date"]
+          fields: ["date", "reading"]
         });
       } catch (err) {
         //  catch db errors
