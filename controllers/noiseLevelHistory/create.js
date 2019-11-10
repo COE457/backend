@@ -1,10 +1,10 @@
-const lightSensorHistory = require("../../models").lightSensorHistory;
-const LightSensorHistory = new lightSensorHistory();
+const noiseLevelHistory = require("../../models").noiseLevelHistory;
+const NoiseLevelHistory = new noiseLevelHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const newAtmosphere = await LightSensorHistory.create(req.body);
-        res.status(201).json(newAtmosphere);
+        const newNoiseLevelHistory = await NoiseLevelHistory.create(req.body);
+        res.status(201).json(newNoiseLevelHistory);
     } catch (err) {
         let status =
             (err.error == "duplicateLocation" || err.error == "missingKeys" || err.error == "notInTheDataBase") ? 400 :

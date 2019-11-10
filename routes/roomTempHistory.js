@@ -15,7 +15,7 @@ const controller = require('../controllers/' + file.split('.')[0]);
 
 router.post('/create',controller.create); //  create request
 router.delete('/destroy',controller.destroy); //  delete request
-router.put('/update',controller.edit); //  update (edit) request
-router.get('/read',controller.find); //  read request
+router.put('/update',controller.update); //  update (edit) request
+router.get('/read',controller.read); //  read request
 
 module.exports = router; //  exporting the router object

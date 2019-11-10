@@ -1,10 +1,10 @@
-const roomTempHistory = require("../../models").roomTempHistory;
-const RoomTempHistory = new roomTempHistory();
+const noiseLevelHistory = require("../../models").noiseLevelHistory;
+const NoiseLevelHistory = new NoiseLevelHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const updatedRoomTempHistory = await RoomTempHistory.update(req.body);
-        res.status(201).json(updatedRoomTempHistory);
+        const updatedNoiseLevelHistory = await NoiseLevelHistory.update(req.body);
+        res.status(201).json(updatedNoiseLevelHistory);
     } catch (err) {
         let status =
             (err.error == "notInTheDataBase" || err.error == "missingKeys") ? 400 :
