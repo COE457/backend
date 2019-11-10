@@ -6,6 +6,7 @@ const path = require("path");
 //  importing routes
 const parentRouter = require('./routes/parent');
 const childRouter = require('./routes/child');
+const locationHistoryRouter = require('./routes/locationHistory');
 const smartwatchRouter = require('./routes/smartwatch');
 const heartRateHistoryRouter = require('./routes/heartratehistory');
 const equipmentHistoryRouter = require('./routes/equipmenthistory');
@@ -14,6 +15,7 @@ const lightSensorRouter = require('./routes/lightSensorHistory');
 const atmosphereRouter = require('./routes/atmosphere');
 const roomTempRouter = require('./routes/roomTempHistory');
 const noiseLevelRouter = require('./routes/noiseLevelHistory');
+
 
 const app = express();
 
@@ -30,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //  using routes
 app.use('/API/parent', parentRouter);
 app.use('/API/child', childRouter);
+app.use('/API/locationHistory', locationHistoryRouter);
 app.use('/API/smartwatch', smartwatchRouter);
 app.use('/API/heartratehistory', heartRateHistoryRouter);
 app.use('/API/equipmenthistory', equipmentHistoryRouter);
