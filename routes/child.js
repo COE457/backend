@@ -1,8 +1,8 @@
 /**
- * @file <modename>.js
+ * @file child.js
  * 
  * sets up the needed routes for the CRUD controllers for 
- * <modelname>
+ * child
  */
 
 let express = require('express');

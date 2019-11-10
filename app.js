@@ -10,6 +10,10 @@ const smartwatchRouter = require('./routes/smartwatch');
 const heartRateHistoryRouter = require('./routes/heartratehistory');
 const equipmentHistoryRouter = require('./routes/equipmenthistory');
 const panicHistoryRouter = require('./routes/panichistory');
+const lightSensorRouter = require('./routes/lightSensorHistory');
+const atmosphereRouter = require('./routes/atmosphere');
+const roomTempRouter = require('./routes/roomTempHistory');
+const noiseLevelRouter = require('./routes/noiseLevelHistory');
 
 const app = express();
 
@@ -30,6 +34,10 @@ app.use('/API/smartwatch', smartwatchRouter);
 app.use('/API/heartratehistory', heartRateHistoryRouter);
 app.use('/API/equipmenthistory', equipmentHistoryRouter);
 app.use('/API/panichistory', panicHistoryRouter);
+app.use('/API/lightSensorHistory', lightSensorRouter);
+app.use('/API/atmosphere', atmosphereRouter);
+app.use('/API/roomTempHistory', roomTempRouter);
+app.use('/API/noiseLevelHistory', noiseLevelRouter);
 
 
 // catch 404 and forward to error handler
