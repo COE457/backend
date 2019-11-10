@@ -1,10 +1,10 @@
-const lightSensorHistory = require("../../models").lightSensorHistory;
-const LightSensorHistory = new lightSensorHistory();
+const noiseLevelHistory = require("../../models").noiseLevelHistory;
+const NoiseLevelHistory = new noiseLevelHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const deletedLightSensorHistory = await LightSensorHistory.destroy(req.body);
-        res.status(200).json(deletedLightSensorHistory);
+        const deletedNoiseLevelHistory = await NoiseLevelHistory.destroy(req.body);
+        res.status(200).json(deletedNoiseLevelHistory);
     } catch (err) {
         let status =
             (err.error == "missingKeys" || err.error == "notInTheDataBase") ? 400 :

@@ -7,6 +7,12 @@ const path = require("path");
 const parentRouter = require('./routes/parent');
 const childRouter = require('./routes/child');
 const locationHistoryRouter = require('./routes/locationHistory');
+const lightSensorRouter = require('./routes/lightSensorHistory');
+const atmosphereRouter = require('./routes/atmosphere');
+const roomTempRouter = require('./routes/roomTempHistory');
+const noiseLevelRouter = require('./routes/noiseLevelHistory');
+
+
 const app = express();
 
 const cors = require('cors');
@@ -23,6 +29,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use('/API/parent', parentRouter);
 app.use('/API/child', childRouter);
 app.use('/API/locationHistory', locationHistoryRouter);
+app.use('/API/lightSensorHistory', lightSensorRouter);
+app.use('/API/atmosphere', atmosphereRouter);
+app.use('/API/roomTempHistory', roomTempRouter);
+app.use('/API/noiseLevelHistory', noiseLevelRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
