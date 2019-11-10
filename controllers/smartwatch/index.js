@@ -1,6 +1,5 @@
 module.exports = {
     create: require('./create'),
     destroy: require('./destroy'),
-    edit: require('./edit'),
-    find: require('./find')
-};
+    update: require('./update'),
+    read: require('./read')};
