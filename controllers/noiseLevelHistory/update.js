@@ -1,5 +1,5 @@
 const noiseLevelHistory = require("../../models").noiseLevelHistory;
-const NoiseLevelHistory = new NoiseLevelHistory();
+const NoiseLevelHistory = new noiseLevelHistory();
 
 module.exports = async (req, res, next) => {
     try {

@@ -11,5 +11,6 @@ module.exports = {
 	locationHistory: require('./locationHistory.js'),
 	lightSensorHistory: require('./lightSensorHistory.js'),
 	roomTempHistory: require('./roomTempHistory.js'),
-	atmosphereAlert: require('./atmosphereAlert.js')
+	atmosphereAlert: require('./atmosphereAlert.js'),
+	noiseLevelHistory: require('./noiseLevelHistory')
 };

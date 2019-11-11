@@ -7,11 +7,11 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a parent exists or not
-const parent = require("./smartwatch");
-const Parent = new parent();
+//  for checking if a smartwatch exists or not
+const smartwatch = require("./smartwatch");
+const Smartwatch = new smartwatch();
 
-class Child {
+class LocationHistory {
   constructor() {
     //  setting the required keys
     this.columns = ["location", "currentlyThere", "date "];
@@ -52,11 +52,11 @@ class Child {
       }
 
       try {
-        //  grabbing all _id's of Parents in db
-        var ids = await db.get(body.Parent);
+        //  grabbing all _id's of Smartwatchs in db
+        var ids = await db.get(body.Smartwatch);
       } catch (err) {
-        //  if parent doesn't exist
-        reject(errors.notInTheDataBase(body.Parent));
+        //  if smartwatch doesn't exist
+        reject(errors.notInTheDataBase(body.Smartwatch));
         return;
       }
 
@@ -194,8 +194,8 @@ class Child {
       //  deleting the rev in the body to avoid conflicts
       delete body._rev;
 
-      //  deleting Parent to prevent changing parent
-      if (body.Parent) delete body.Parent;
+      //  deleting Smartwatch to prevent changing smartwatch
+      if (body.Smartwatch) delete body.Smartwatch;
 
       try {
         var target = await db //  finding Children
