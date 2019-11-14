@@ -7,9 +7,6 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a parent exists or not
-const parent = require("./parent");
-const Parent = new parent();
 
 class Child {
   constructor() {
@@ -130,6 +127,23 @@ class Child {
           const _id = target.docs[0]._id;
           const _rev = target.docs[0]._rev;
           const deletedChild = await db.destroy(_id, _rev); //  attempt to destroy
+
+          //  listing smartwatches that the child owns
+          const smartwatches = await db.find({
+            selector : {
+              Child: body._id,
+              docType: "Smartwatch"
+            }
+          })
+
+          //  deleting smartwatches
+          smartwatches.docs.forEach(item => {
+            item._deleted = true;
+          })
+
+          console.log({docs: smartwatches.docs});
+          const chainDelete = await db.bulk({docs: smartwatches.docs});
+          
           resolve(deletedChild);
           return;
         } catch (err) {
