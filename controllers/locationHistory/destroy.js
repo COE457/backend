@@ -1,10 +1,10 @@
-const child = require("../../models").child;
-const Child = new child();
+const locationHistory = require("../../models").locationHistory;
+const LocationHistory = new locationHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const deletedChild = await Child.destroy(req.body);
-        res.status(200).json(deletedChild);
+        const deletedLocationHistory = await LocationHistory.destroy(req.body);
+        res.status(200).json(deletedLocationHistory);
     } catch (err) {
         let status =
             (err.error == "missingKeys" || err.error == "notInTheDataBase") ? 400 :

@@ -1,10 +1,10 @@
-const child = require("../../models").child;
-const Child = new child();
+const locationHistory = require("../../models").locationHistory;
+const LocationHistory = new locationHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const foundChild = await Child.read(req.query);
-        res.status(200).json(foundChild);
+        const foundLocationHistory = await LocationHistory.read(req.query);
+        res.status(200).json(foundLocationHistory);
     } catch (err) {
         let status = (err.error == "databaseError") ? 500 : 500;
         res.status(status).send(err);

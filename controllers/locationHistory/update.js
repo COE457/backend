@@ -1,10 +1,10 @@
-const child = require("../../models").child;
-const Child = new child();
+const locationHistory = require("../../models").locationHistory;
+const LocationHistory = new locationHistory();
 
 module.exports = async (req, res, next) => {
     try {
-        const updatedChild = await Child.update(req.body);
-        res.status(201).json(updatedChild);
+        const updatedLocationHistory = await LocationHistory.update(req.body);
+        res.status(201).json(updatedLocationHistory);
     } catch (err) {
         let status =
             (err.error == "notInTheDataBase" || err.error == "missingKeys") ? 400 :

@@ -1,5 +1,5 @@
 /**
- * @file child.js
+ * @file locationHistory.js
  *
  * @description used to make CRUD operations unified for all Child docTypes
  */
@@ -7,14 +7,11 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a smartwatch exists or not
-const smartwatch = require("./smartwatch");
-const Smartwatch = new smartwatch();
 
 class LocationHistory {
   constructor() {
     //  setting the required keys
-    this.columns = ["location", "currentlyThere", "date "];
+    this.columns = ["location", "currentlyThere", "date"];
     this.owner = ["Smartwatch"];
   }
   /**
@@ -23,7 +20,7 @@ class LocationHistory {
    * @fires db.find
    * @fires db.insert
    * @returns Promise.resolve or Promise.reject
-   * @description adds a new child to the database iff the name was not a duplicate and the body contains all required keys
+   * @description adds a new locationHistory to the database iff the name was not a duplicate and the body contains all required keys
    */
 
   //  performs creation based on this.column
@@ -125,7 +122,7 @@ class LocationHistory {
       if (body._id) {
         try {
           //  if  was provided
-          const foundChild = await db.get(body._id); //  get the child that matches the id
+          const foundChild = await db.get(body._id); //  get the locationHistory that matches the id
           resolve(foundChild); //  return and resolve promise
         } catch (err) {
           reject(errors.notInTheDataBase(body._id));
@@ -138,7 +135,7 @@ class LocationHistory {
                   $gt: body.date - 7200     //get locations for past 2 hours
               }
           }
-          const foundLocations = await db.find(selector);
+          const foundLocations = await db.find({selector: selector});
           resolve(foundLocations); //  return and resolve promise
           return;
       }  
@@ -156,8 +153,9 @@ class LocationHistory {
 
         //  add the "selector" key to the whole thing
         selector = { selector: selector };
-        const foundChildren = await db.find(selector); //  get all matches
-        resolve(foundChildren); //  return and resolve promise
+
+        const foundLocationHistories = await db.find(selector); //  get all matches
+        resolve(foundLocationHistories); //  return and resolve promise
         return;
       }
     });
@@ -169,7 +167,7 @@ class LocationHistory {
    * @fires db.find
    * @fires db.insert
    * @returns Promise.resolve or Promise.reject
-   * @description updates child based on _id and _rev or name
+   * @description updates locationHistory based on _id and _rev or name
    */
   update(body) {
     return new Promise(async (resolve, reject) => {
@@ -198,9 +196,9 @@ class LocationHistory {
       if (body.Smartwatch) delete body.Smartwatch;
 
       try {
-        var target = await db //  finding Children
+        var target = await db //  finding LocationHistories
           .find({
-            //  find all children with name
+            //  find all locationHistories with name
             selector: search
           });
         if (target.docs.length == 0) {
