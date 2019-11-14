@@ -141,7 +141,6 @@ class Child {
             item._deleted = true;
           })
 
-          console.log({docs: smartwatches.docs});
           const chainDelete = await db.bulk({docs: smartwatches.docs});
           
           resolve(deletedChild);
