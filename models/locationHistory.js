@@ -132,7 +132,7 @@ class LocationHistory {
           let selector = {
               date: {
                   $lt: body.date,           //date expected in unix format
-                  $gt: body.date - 7200     //get locations for past 2 hours
+                  $gt: body.date - 600000    //get locations for past 2 hours
               }
           }
           const foundLocations = await db.find({selector: selector});
