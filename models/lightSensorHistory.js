@@ -7,15 +7,15 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a atmosphere exists or not
-const atmosphere = require("./atmosphere");
-const Atmosphere = new atmosphere();
+//  for checking if a smartwacch exists or not
+const smartwatch = require("./smartwatch");
+const Smartwatch = new smartwatch();
 
 class LightSensorHistory {
   constructor() {
     //  setting the required keys
     this.columns = ["date","reading"];
-    this.owner = ["Atmosphere"];
+    this.owner = ["Smartwatch"];
   }
   /**
    * @function create
@@ -58,10 +58,10 @@ class LightSensorHistory {
       }
 
       try {
-        //  grabbing all _id's of Atmospheres in db
-        var ids = await db.get(body.Atmosphere);
+        //  grabbing all _id's of Smartwatchs in db
+        var ids = await db.get(body.Smartwatch);
       } catch (err) {
-        //  if atmosphere doesn't exist
+        //  if Smartwatch doesn't exist
         reject(errors.notInTheDataBase(body.Atmoshphere));
         return;
       }
@@ -214,8 +214,8 @@ class LightSensorHistory {
       //  deleting the rev in the body to avoid conflicts
       delete body._rev;
 
-      //  deleting Atmosphere to prevent changing atmosphere
-      if (body.Atmosphere) delete body.Atmosphere;
+      //  deleting Smartwatch to prevent changing Smartwatch
+      if (body.Smartwatch) delete body.Smartwatch;
 
       try {
         var target = await db //  finding LightSensorHistorys

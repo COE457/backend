@@ -14,7 +14,7 @@ const Smartwatch = new smartwatch();
 class PanicHistory {
   constructor() {
     //  setting the required keys
-    this.columns = ["date"];
+    this.columns = ["date","dismissed"];
     this.owner = ["Smartwatch"];
   }
   /**
@@ -43,7 +43,7 @@ class PanicHistory {
         //  grabbing all panics and dates in db
         var panics = await db.find({
           selector: { docType: "PanicHistory" },
-          fields: ["date"]
+          fields: ["date","dismissed"]
         });
       } catch (err) {
         //  catch db errors
@@ -237,9 +237,12 @@ class PanicHistory {
           body.date = body.newDate;
           delete body.newDate;
         }
-        
+        if (body.newDismiss)
+        {
+          body.dismissed = body.newDismiss;
+          delete body.newDismiss;
+        }
   
-
         //  delete extra keys from body
         let keys = Object.keys(body); //  body keys
         let restricted = this.columns
