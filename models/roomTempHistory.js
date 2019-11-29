@@ -152,32 +152,25 @@ class RoomTempHistory {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if (body._id) {
-        try {
-          //  if id was provided
-          const foundRoomTempHistory = await db.get(body._id); //  get the roomTempHistory that matches the id
-          resolve(foundRoomTempHistory); //  return and resolve promise
-        } catch (err) {
-          reject(errors.notInTheDataBase(body._id));
-        }
-        return;
-      } else {
-        //  if id was not provided
 
-        //  setup a selector based on regex to find all similar cases
-        let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")+" } };
-        });
+      //  if trying to find range
+      body.descending = (body.startkey || body.endkey)? false:true;
+      if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
+      if(body.endkey) body.endkey = Number(body.endkey);
 
-        //  assemble the object array into a single object
-        selector = Object.assign({}, ...selector);
-        selector.docType = "RoomTempHistory"; //  search only RoomTempHistory docs
+      //  default vs custom behaviour
+      let page = !isNaN(body.page)? body.page : 0;
+      let rows = !isNaN(body.rows)? body.rows : 5;
 
-        //  add the "selector" key to the whole thing
-        selector = { selector: selector };
-        const foundRoomTempHistorys = await db.find(selector); //  get all matches
-        resolve(foundRoomTempHistorys); //  return and resolve promise
-        return;
+      //  from page and rows to skips and limits
+      body.skip = page * rows;
+      body.limit = Number(rows);
+
+      try{
+        const result = await db.view('sorted', 'RoomTempHistory', body);
+        resolve(result);
+      } catch (err) {
+        reject(errors.databaseError(err));
       }
     });
   }

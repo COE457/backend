@@ -118,48 +118,29 @@ class LocationHistory {
    * @fires db.find
    * @fires db.get
    * @returns Promise.resolve
-   * @description lists location based on date/time
+   * @description lists location based on search query
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if (body._id) {
-        try {
-          //  if  was provided
-          const foundChild = await db.get(body._id); //  get the locationHistory that matches the id
-          resolve(foundChild); //  return and resolve promise
-        } catch (err) {
-          reject(errors.notInTheDataBase(body._id));
-        }
-        return;
-      } else if(body.date) {    //if date was provided - this is the main way
-          let selector = {
-              date: {
-                  $lt: body.date,           //date expected in unix format
-                  $gt: body.date - 600000    //get locations for past 2 hours
-              }
-          }
-          const foundLocations = await db.find({selector: selector});
-          resolve(foundLocations); //  return and resolve promise
-          return;
-      }  
-        else {
-        //  if id was not provided
 
-        //  setup a selector based on regex to find all similar cases
-        let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")+" } };
-        });
+      //  if trying to find range
+      body.descending = (body.startkey || body.endkey)? false:true;
+      if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
+      if(body.endkey) body.endkey = Number(body.endkey);
 
-        //  assemble the object array into a single object
-        selector = Object.assign({}, ...selector);
-        selector.docType = "LocationHistory"; //  search only Child docs
+      //  default vs custom behaviour
+      let page = !isNaN(body.page)? body.page : 0;
+      let rows = !isNaN(body.rows)? body.rows : 5;
 
-        //  add the "selector" key to the whole thing
-        selector = { selector: selector };
+      //  from page and rows to skips and limits
+      body.skip = page * rows;
+      body.limit = Number(rows);
 
-        const foundLocationHistories = await db.find(selector); //  get all matches
-        resolve(foundLocationHistories); //  return and resolve promise
-        return;
+      try{
+        const result = await db.view('sorted', 'LocationHistory', body);
+        resolve(result);
+      } catch (err) {
+        reject(errors.databaseError(err));
       }
     });
   }

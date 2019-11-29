@@ -152,32 +152,25 @@ class HeartRateHistory {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if (body._id) {
-        try {
-          //  if id was provided
-          const foundHeartRateHistory = await db.get(body._id); //  get the heartRateHistory that matches the id
-          resolve(foundHeartRateHistory); //  return and resolve promise
-        } catch (err) {
-          reject(errors.notInTheDataBase(body._id));
-        }
-        return;
-      } else {
-        //  if id was not provided
 
-        //  setup a selector based on regex to find all similar cases
-        let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")+" } };
-        });
+      //  if trying to find range
+      body.descending = (body.startkey || body.endkey)? false:true;
+      if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
+      if(body.endkey) body.endkey = Number(body.endkey);
 
-        //  assemble the object array into a single object
-        selector = Object.assign({}, ...selector);
-        selector.docType = "HeartRateHistory"; //  search only HeartRateHistory docs
+      //  default vs custom behaviour
+      let page = !isNaN(body.page)? body.page : 0;
+      let rows = !isNaN(body.rows)? body.rows : 5;
 
-        //  add the "selector" key to the whole thing
-        selector = { selector: selector };
-        const foundHeartRateHistories = await db.find(selector); //  get all matches
-        resolve(foundHeartRateHistories); //  return and resolve promise
-        return;
+      //  from page and rows to skips and limits
+      body.skip = page * rows;
+      body.limit = Number(rows);
+
+      try{
+        const result = await db.view('sorted', 'HeartRateHistory', body);
+        resolve(result);
+      } catch (err) {
+        reject(errors.databaseError(err));
       }
     });
   }
