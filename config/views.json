@@ -1,0 +1,33 @@
+{
+    "_id": "_design/sorted",
+    "views": {
+        "LocationHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"LocationHistory\"){\n    emit(doc.date, [doc.currentlyThere, doc.Smartwatch, doc.location]); \n  }\n}"
+        },
+        "HeartRateHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"HeartRateHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.reading]); \n  }\n}"
+        },
+        "Child": {
+            "map": "function (doc) {\n  if (doc.docType === \"Child\"){\n    emit(doc.name, doc.Parent); \n  }\n}"
+        },
+        "Atmosphere": {
+            "map": "function (doc) {\n  if (doc.docType === \"Atmosphere\"){\n    emit(doc.location, doc.Parent); \n  }\n}"
+        },
+        "EquipmentHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"EquipmentHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.equipped]); \n  }\n}"
+        },
+        "LightSensorHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"LightSensorHistory\"){\n    emit(doc.date, [doc.Atmosphere, doc.reading]); \n  }\n}"
+        },
+        "NoiseLevelHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"NoiseLevelHistory\"){\n    emit(doc.date, [doc.Atmosphere, doc.reading]); \n  }\n}"
+        },
+        "PanicHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"PanicHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.dismissed]); \n  }\n}"
+        },
+        "RoomTempHistory": {
+            "map": "function (doc) {\n  if (doc.docType === \"RoomTempHistory\"){\n    emit(doc.date, [doc.Atmosphere, doc.reading]); \n  }\n}"
+        }
+    },
+    "language": "javascript"
+}
