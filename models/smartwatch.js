@@ -7,9 +7,6 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a parent exists or not
-const child = require("./child");
-const Child = new child();
 
 class Smartwatch {
   constructor() {

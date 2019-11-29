@@ -7,10 +7,6 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a smartwacch exists or not
-const smartwatch = require("./smartwatch");
-const Smartwatch = new smartwatch();
-
 class LocationHistory {
   constructor() {
     //  setting the required keys

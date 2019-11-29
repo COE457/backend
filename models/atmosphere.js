@@ -7,10 +7,6 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a parent exists or not
-const parent = require("./parent");
-const Parent = new parent();
-
 class Atmosphere {
   constructor() {
     //  setting the required keys
