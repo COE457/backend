@@ -126,7 +126,7 @@ class LocationHistory {
 
       //  default vs custom behaviour
       let page = !isNaN(body.page)? body.page : 0;
-      let rows = !isNaN(body.rows)? body.rows : 5;
+      let rows = !isNaN(body.rows)? body.rows : 10;
 
       //  from page and rows to skips and limits
       body.skip = page * rows;
