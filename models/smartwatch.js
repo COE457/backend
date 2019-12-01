@@ -11,8 +11,8 @@ const errors = require("../utils/errorMessages"); //  for unified error messages
 class Smartwatch {
   constructor() {
     //  setting the required keys
-    this.columns = ["serialNumber"];
-    this.owner = ["Child"];
+    this.columns = ["serialNumber", "active"];
+    this.owner = ["Parent"];
   }
   /**
    * @function create

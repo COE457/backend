@@ -16,18 +16,31 @@ service.db.create(opts.DB_NAME).then(db => {
     if (err.error === "file_exists") {
         console.log("database already exists. Previous entries were not affected");
     }
-});
+}).finally(() => {
+    const db = service.use(opts.DB_NAME);
+    const designDocs = JSON.parse(fs.readFileSync('./config/designDocs.json'));
+    const sortedSensors = designDocs.sortedSensors;
+    const smartwatchRelated = designDocs.smartwatchRelated;
 
-const db = service.use(opts.DB_NAME);
+    db.insert(sortedSensors).then(views => {
+        console.log(`${views.id} successfully added to db!`);
+    }).catch(err => {
+        if (err.error === "conflict") {
+            console.log("views already loaded. To update views, manually delete '_design/sortedSensors'");
+        }
+    });
 
-const views = JSON.parse(fs.readFileSync('./config/views.json'));
+    db.insert(smartwatchRelated).then(views => {
+        console.log(`${views.id} successfully added to db!`);
+    }).catch(err => {
+        if (err.error === "conflict") {
+            console.log("views already loaded. To update views, manually delete '_design/smartwatchRelated'");
+        }
+    });
 
-db.insert(views).then(views => {
-    console.log(`${views.id} successfully added to db!`);
-}).catch(err => {
-    if (err.error === "conflict") {
-        console.log("views already loaded. To update views, manually delete '_design/sorted'");
-    }
-});
+    module.exports = db;
+})
 
-module.exports = db;
+
+
+

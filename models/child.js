@@ -12,7 +12,7 @@ class Child {
   constructor() {
     //  setting the required keys
     this.columns = ["name"];
-    this.owner = ["Parent"];
+    this.owner = ["Parent", "Smartwatch"];
   }
   /**
    * @function create
@@ -128,18 +128,10 @@ class Child {
           const _rev = target.docs[0]._rev;
           const deletedChild = await db.destroy(_id, _rev); //  attempt to destroy
 
-          //  listing smartwatches that the child owns
-          const smartwatches = await db.find({
-            selector : {
-              Child: body._id,
-              docType: "Smartwatch"
-            }
-          })
-
-          //  deleting smartwatches
-          smartwatches.docs.forEach(item => {
-            item._deleted = true;
-          })
+          // deleting smartwatch
+          const smartwatch = require('./smartwatch');
+          const Smartwatch = new smartwatch();
+          Smartwatch.destroy({serialNumber: this.Smartwatch});
 
           const chainDelete = await db.bulk({docs: smartwatches.docs});
           
