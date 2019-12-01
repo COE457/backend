@@ -37,9 +37,9 @@ service.db.create(opts.DB_NAME).then(db => {
             console.log("views already loaded. To update views, manually delete '_design/smartwatchRelated'");
         }
     });
-
-    module.exports = db;
 })
+
+module.exports = service.use(opts.DB_NAME);
 
 
 

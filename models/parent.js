@@ -14,7 +14,7 @@ const BCRYPT_SALT_ROUNDS = 12;
 class Parent {
   constructor() {
     //  setting the required keys
-    this.columns = ["username", "email", "password", "phoneNumber"];
+    this.columns = ["_id", "email", "password", "phoneNumber"];
   }
   /**
    * @function create
@@ -22,7 +22,7 @@ class Parent {
    * @fires db.find
    * @fires db.insert
    * @returns Promise.resolve or Promise.reject
-   * @description adds a new parent to the database iff the username was not a duplicate and the body contains all required keys
+   * @description adds a new parent to the database iff the _id was not a duplicate and the body contains all required keys
    */
 
   //  performs creation based on this.column
@@ -31,24 +31,6 @@ class Parent {
       //  checking for missing keys
       if (!this.columns.every(item => Object.keys(body).includes(item))) {
         reject(errors.missingKeys); //  exit the function and return a promise reject
-        return; //  exiting the function
-      }
-
-      try {
-        //  grabbing all usernames in db
-        var usernames = await db.find({
-          selector: { docType: "Parent" },
-          fields: ["username"]
-        });
-      } catch (err) {
-        //  catch db errors
-        reject(errors.databaseError(err));
-        return;
-      }
-
-      //  checking for duplicate username
-      if (usernames.docs.map(item => item.username).includes(body.username)) {
-        reject(errors.duplicate("Username", body.username)); //  reject duplicate entry
         return; //  exiting the function
       }
 
@@ -70,9 +52,14 @@ class Parent {
           var newParent = await db.insert(body);
           resolve(newParent); //  resolving the promise and returning newParent
         } catch (err) {
-          //  catch db errors
-          reject(errors.databaseError(err));
-          return;
+          if (err.error === "conflict") {
+            reject(errors.duplicate("Username", body._id)); //  reject duplicate entry
+            return;
+          } else {
+            //  catch db errors
+            reject(errors.databaseError(err));
+            return;
+          }
         }
       });
     });
@@ -84,7 +71,7 @@ class Parent {
    * @fires db.find
    * @fires db.destroy
    * @returns Promise.resolve or Promise.reject
-   * @description removes parent based on _id and _rev or username
+   * @description removes parent based on _id and _rev or _id
    *
    *
    * @todo fix warnings
@@ -102,19 +89,19 @@ class Parent {
           reject(errors.databaseError(err));
           return;
         }
-      } else if (body.username) {
-        //  if username but not id was provided, find id and rev
+      } else if (body._id) {
+        //  if _id but not id was provided, find id and rev
         try {
           const target = await db.find({
             selector: {
               docType: "Parent",
-              username: body.username
+              _id: body._id
             },
             fields: ["_id", "_rev"]
           });
           if (target.docs.length == 0) {
             //  reject in case of no results
-            reject(errors.notInTheDataBase(body.username));
+            reject(errors.notInTheDataBase(body._id));
             return;
           }
           const _id = target.docs[0]._id;
@@ -179,11 +166,11 @@ class Parent {
    * @fires db.find
    * @fires db.insert
    * @returns Promise.resolve or Promise.reject
-   * @description updates parent based on _id and _rev or username
+   * @description updates parent based on _id and _rev or _id
    */
   update(body) {
     return new Promise(async (resolve, reject) => {
-      if (!((body._id && body._rev) || body.username)) {
+      if (!((body._id && body._rev) || body._id)) {
         //  in case not enough parameters were provided
         reject(errors.missingKeys); //  reject and return
         return;
@@ -199,20 +186,20 @@ class Parent {
       let search = //  setting up the search term based on available data
         body._id && body._rev
           ? {
-              docType: "Parent",
-              _id: body._id
-            }
+            docType: "Parent",
+            _id: body._id
+          }
           : {
-              docType: "Parent",
-              username: body.username
-            };
+            docType: "Parent",
+            _id: body._id
+          };
 
       //  deleting the rev in the body to avoid conflicts
       delete body._rev;
       try {
         var target = await db //  finding Parents
           .find({
-            //  find all parents with username
+            //  find all parents with _id
             selector: search
           });
         if (target.docs.length == 0) {
@@ -225,9 +212,9 @@ class Parent {
         reject(errors.databaseError(err));
         return;
       } finally {
-        //  in case username needs to be changed
+        //  in case _id needs to be changed
         if (body.newUsername) {
-          body.username = body.newUsername;
+          body._id = body.newUsername;
           delete body.newUsername;
         }
 
