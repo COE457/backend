@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
+const passport    = require('passport');
 
 
 //  importing routes
@@ -15,6 +16,7 @@ const lightSensorRouter = require('./routes/lightSensorHistory');
 const atmosphereRouter = require('./routes/atmosphere');
 const roomTempRouter = require('./routes/roomTempHistory');
 const noiseLevelRouter = require('./routes/noiseLevelHistory');
+const login = require('./routes/login');
 
 
 const app = express();
@@ -26,6 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+require('./config/auth');
+app.use(passport.initialize());
 
 
 
@@ -41,6 +45,7 @@ app.use('/API/lightSensorHistory', lightSensorRouter);
 app.use('/API/atmosphere', atmosphereRouter);
 app.use('/API/roomTempHistory', roomTempRouter);
 app.use('/API/noiseLevelHistory', noiseLevelRouter);
+app.use('/API/', login);
 
 
 // catch 404 and forward to error handler
