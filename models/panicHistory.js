@@ -163,7 +163,7 @@ class PanicHistory {
       body.limit = Number(rows);
 
       try{
-        const result = await db.view('sorted', 'PanicHistory', body);
+        const result = await db.view('sortedSensors', 'PanicHistory', body);
         resolve(result);
       } catch (err) {
         reject(errors.databaseError(err));

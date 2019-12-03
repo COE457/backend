@@ -129,11 +129,9 @@ class Child {
           const deletedChild = await db.destroy(_id, _rev); //  attempt to destroy
 
           // deleting smartwatch
-          const smartwatch = require('./smartwatch');
-          const Smartwatch = new smartwatch();
-          Smartwatch.destroy({serialNumber: this.Smartwatch});
-
-          const chainDelete = await db.bulk({docs: smartwatches.docs});
+          // const smartwatch = require('./smartwatch');
+          // const Smartwatch = new smartwatch();
+          // Smartwatch.destroy({_id: this.Smartwatch});
           
           resolve(deletedChild);
           return;

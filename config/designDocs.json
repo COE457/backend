@@ -34,7 +34,7 @@
                 "map": "function (doc) {\n  if (doc.docType === \"Smartwatch\"){\n    emit(doc.serialNumber, null); \n  }\n}"
             },
             "actives": {
-                "map": "function (doc) {\n  if (doc.docType === \"Smartwatch\"){\n    emit(doc.active, doc.serialNumber); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"Smartwatch\"){\n    if (doc.active === \"false\"){\n      emit(doc.Parent, doc.serialNumber); \n    }\n  }\n}"
             }
         },
         "language": "javascript"

@@ -163,7 +163,7 @@ class HeartRateHistory {
       body.limit = Number(rows);
 
       try{
-        const result = await db.view('sorted', 'HeartRateHistory', body);
+        const result = await db.view('sortedSensors', 'HeartRateHistory', body);
         resolve(result);
       } catch (err) {
         reject(errors.databaseError(err));

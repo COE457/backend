@@ -163,7 +163,7 @@ class NoiseLevelHistory {
       body.limit = Number(rows);
 
       try{
-        const result = await db.view('sorted', 'NoiseLevelHistory', body);
+        const result = await db.view('sortedSensors', 'NoiseLevelHistory', body);
         resolve(result);
       } catch (err) {
         reject(errors.databaseError(err));

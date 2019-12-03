@@ -133,7 +133,7 @@ class LocationHistory {
       body.limit = Number(rows);
 
       try{
-        const result = await db.view('sorted', 'LocationHistory', body);
+        const result = await db.view('sortedSensors', 'LocationHistory', body);
         resolve(result);
       } catch (err) {
         reject(errors.databaseError(err));

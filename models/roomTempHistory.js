@@ -164,7 +164,7 @@ class RoomTempHistory {
       body.limit = Number(rows);
 
       try{
-        const result = await db.view('sorted', 'RoomTempHistory', body);
+        const result = await db.view('sortedSensors', 'RoomTempHistory', body);
         resolve(result);
       } catch (err) {
         reject(errors.databaseError(err));

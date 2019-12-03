@@ -163,7 +163,7 @@ class LightSensorHistory {
       body.limit = Number(rows);
 
       try{
-        const result = await db.view('sorted', 'LightSensorHistory', body);
+        const result = await db.view('sortedSensors', 'LightSensorHistory', body);
         resolve(result);
       } catch (err) {
         reject(errors.databaseError(err));
