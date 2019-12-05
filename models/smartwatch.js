@@ -7,15 +7,12 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a parent exists or not
-const child = require("./child");
-const Child = new child();
 
 class Smartwatch {
   constructor() {
     //  setting the required keys
-    this.columns = ["serialNumber"];
-    this.owner = ["Child"];
+    this.columns = ["serialNumber", "active"];
+    this.owner = ["Parent"];
   }
   /**
    * @function create
@@ -152,36 +149,28 @@ class Smartwatch {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if (body._id) {
-        try {
-          //  if id was provided
-          const foundSmartwatch = await db.get(body._id); //  get the child that matches the id
-          resolve(foundSmartwatch); //  return and resolve promise
-        } catch (err) {
-          reject(errors.notInTheDataBase(body._id));
-        }
-        return;
-      } else {
-        //  if id was not provided
 
-        //  setup a selector based on regex to find all similar cases
-        let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")+" } };
-        });
+      //  if trying to find range
+      body.descending = (body.startkey || body.endkey)? false:true;
+      if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
+      if(body.endkey) body.endkey = Number(body.endkey);
 
-        //  assemble the object array into a single object
-        selector = Object.assign({}, ...selector);
-        selector.docType = "Smartwatch"; //  search only Child docs
+      //  default vs custom behaviour
+      let page = !isNaN(body.page)? body.page : 0;
+      let rows = !isNaN(body.rows)? body.rows : 10;
 
-        //  add the "selector" key to the whole thing
-        selector = { selector: selector };
-        const foundSmartwatchs = await db.find(selector); //  get all matches
-        resolve(foundSmartwatchs); //  return and resolve promise
-        return;
+      //  from page and rows to skips and limits
+      body.skip = page * rows;
+      body.limit = Number(rows);
+
+      try{
+        const result = await db.view('smartwatchRelated', 'actives', body);
+        resolve(result);
+      } catch (err) {
+        reject(errors.databaseError(err));
       }
     });
   }
-
   /**
    * @function update
    * @param {Object} body

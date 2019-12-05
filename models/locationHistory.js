@@ -7,10 +7,6 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a smartwacch exists or not
-const smartwatch = require("./smartwatch");
-const Smartwatch = new smartwatch();
-
 class LocationHistory {
   constructor() {
     //  setting the required keys
@@ -118,48 +114,38 @@ class LocationHistory {
    * @fires db.find
    * @fires db.get
    * @returns Promise.resolve
-   * @description lists location based on date/time
+   * @description lists location based on search query
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if (body._id) {
-        try {
-          //  if  was provided
-          const foundChild = await db.get(body._id); //  get the locationHistory that matches the id
-          resolve(foundChild); //  return and resolve promise
-        } catch (err) {
-          reject(errors.notInTheDataBase(body._id));
-        }
+      if(!body.Smartwatch){ //  reject if no smartwatch was provided
+        reject(errors.missingKeys);
         return;
-      } else if(body.date) {    //if date was provided - this is the main way
-          let selector = {
-              date: {
-                  $lt: body.date,           //date expected in unix format
-                  $gt: body.date - 600000    //get locations for past 2 hours
-              }
-          }
-          const foundLocations = await db.find({selector: selector});
-          resolve(foundLocations); //  return and resolve promise
-          return;
-      }  
-        else {
-        //  if id was not provided
+      }
 
-        //  setup a selector based on regex to find all similar cases
-        let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")+" } };
-        });
+      //  if trying to find range
+      body.descending = (body.startkey || body.endkey)? false:true; //  data is ascending only and only if a range is requested
+      if(body.startkey) body.startkey = [body.Smartwatch, Number(body.startkey)]; //  making sure keys are numbers 
+      if(body.endkey) body.endkey = [body.Smartwatch, Number(body.endkey)];
 
-        //  assemble the object array into a single object
-        selector = Object.assign({}, ...selector);
-        selector.docType = "LocationHistory"; //  search only Child docs
 
-        //  add the "selector" key to the whole thing
-        selector = { selector: selector };
+      if(!body.startkey && !body.endkey) {//  to get only the data of a certain smartwatch
+        body.startkey = [body.Smartwatch, {}];
+        body.endkey = [body.Smartwatch];
+      }
+      //  default vs custom behaviour
+      let page = !isNaN(body.page)? body.page : 0;
+      let rows = !isNaN(body.rows)? body.rows : 10;
 
-        const foundLocationHistories = await db.find(selector); //  get all matches
-        resolve(foundLocationHistories); //  return and resolve promise
-        return;
+      //  from page and rows to skips and limits
+      body.skip = page * rows;
+      body.limit = Number(rows);
+
+      try{
+        const result = await db.view('sortedSensors', 'LocationHistory', body);
+        resolve(result);
+      } catch (err) {
+        reject(errors.databaseError(err));
       }
     });
   }

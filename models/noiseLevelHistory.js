@@ -7,10 +7,6 @@
 const db = require("../db"); //  for database
 const errors = require("../utils/errorMessages"); //  for unified error messages
 
-//  for checking if a atmosphere exists or not
-const atmosphere = require("./atmosphere");
-const Atmosphere = new atmosphere();
-
 class NoiseLevelHistory {
   constructor() {
     //  setting the required keys
@@ -152,32 +148,25 @@ class NoiseLevelHistory {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if (body._id) {
-        try {
-          //  if id was provided
-          const foundNoiseLevelHistory = await db.get(body._id); //  get the noiseLevelHistory that matches the id
-          resolve(foundNoiseLevelHistory); //  return and resolve promise
-        } catch (err) {
-          reject(errors.notInTheDataBase(body._id));
-        }
-        return;
-      } else {
-        //  if id was not provided
 
-        //  setup a selector based on regex to find all similar cases
-        let selector = Object.keys(body).map(item => {
-          return { [item]: { $regex: "(" + body[item] + ")+" } };
-        });
+      //  if trying to find range
+      body.descending = (body.startkey || body.endkey)? false:true;
+      if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
+      if(body.endkey) body.endkey = Number(body.endkey);
 
-        //  assemble the object array into a single object
-        selector = Object.assign({}, ...selector);
-        selector.docType = "NoiseLevelHistory"; //  search only NoiseLevelHistory docs
+      //  default vs custom behaviour
+      let page = !isNaN(body.page)? body.page : 0;
+      let rows = !isNaN(body.rows)? body.rows : 5;
 
-        //  add the "selector" key to the whole thing
-        selector = { selector: selector };
-        const foundNoiseLevelHistorys = await db.find(selector); //  get all matches
-        resolve(foundNoiseLevelHistorys); //  return and resolve promise
-        return;
+      //  from page and rows to skips and limits
+      body.skip = page * rows;
+      body.limit = Number(rows);
+
+      try{
+        const result = await db.view('sortedSensors', 'NoiseLevelHistory', body);
+        resolve(result);
+      } catch (err) {
+        reject(errors.databaseError(err));
       }
     });
   }
