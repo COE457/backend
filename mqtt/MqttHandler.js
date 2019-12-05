@@ -53,7 +53,8 @@ class MqttHandler {
         controllers[topic.split("/")[1]] //  use the controller associated with the topic 
           .create(JSON.parse(message)) //  use the message to 
           .catch(err => { //  on error 
-            sendMessage(`At ${new Date(Date.now()).toISOString()}:\n${JSON.stringify(err)}`); //  log the error in sensors/backend
+            console.log('err: ', err);
+            
           });
       }
     });
