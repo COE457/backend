@@ -67,4 +67,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
+const mqttHandler = require("./mqtt/MqttHandler");
+var mqttClient = new mqttHandler();
+mqttClient.connect();
+
 module.exports = app;
