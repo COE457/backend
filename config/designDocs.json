@@ -3,7 +3,7 @@
         "_id": "_design/sortedSensors",
         "views": {
             "LocationHistory": {
-                "map": "function (doc) {\n  if (doc.docType === \"LocationHistory\"){\n    emit(doc.date, [doc.currentlyThere, doc.Smartwatch, doc.location]); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"LocationHistory\"){\n    emit([doc.Smartwatch, doc.date], [doc.currentlyThere, doc.location]); \n  }\n}"
             },
             "HeartRateHistory": {
                 "map": "function (doc) {\n  if (doc.docType === \"HeartRateHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.reading]); \n  }\n}"
