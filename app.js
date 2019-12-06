@@ -15,7 +15,6 @@ const panicHistoryRouter = require('./routes/panicHistory');
 const lightSensorRouter = require('./routes/lightSensorHistory');
 const atmosphereRouter = require('./routes/atmosphere');
 const roomTempRouter = require('./routes/roomTempHistory');
-const noiseLevelRouter = require('./routes/noiseLevelHistory');
 const login = require('./routes/login');
 
 
@@ -44,7 +43,6 @@ app.use('/API/panichistory', panicHistoryRouter);
 app.use('/API/lightSensorHistory', lightSensorRouter);
 app.use('/API/atmosphere', atmosphereRouter);
 app.use('/API/roomTempHistory', roomTempRouter);
-app.use('/API/noiseLevelHistory', noiseLevelRouter);
 app.use('/API/', login);
 
 

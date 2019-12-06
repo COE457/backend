@@ -9,6 +9,5 @@ module.exports = {
 	objectHistory: require('./objectHistory.js'),
 	locationHistory: require('./locationHistory.js'),
 	lightSensorHistory: require('./lightSensorHistory.js'),
-	roomTempHistory: require('./roomTempHistory.js'),
-	noiseLevelHistory: require('./noiseLevelHistory')
+	roomTempHistory: require('./roomTempHistory.js')
 };
