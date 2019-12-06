@@ -7,10 +7,8 @@ module.exports = {
 	heartRateHistory: require('./heartRateHistory.js'),
 	panicHistory: require('./panicHistory.js'),
 	objectHistory: require('./objectHistory.js'),
-	watchAlert: require('./watchAlert.js'),
 	locationHistory: require('./locationHistory.js'),
 	lightSensorHistory: require('./lightSensorHistory.js'),
 	roomTempHistory: require('./roomTempHistory.js'),
-	atmosphereAlert: require('./atmosphereAlert.js'),
 	noiseLevelHistory: require('./noiseLevelHistory')
 };
