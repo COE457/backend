@@ -133,6 +133,7 @@ class LocationHistory {
         body.startkey = [body.Smartwatch, {}];
         body.endkey = [body.Smartwatch];
       }
+      
       //  default vs custom behaviour
       let page = !isNaN(body.page)? body.page : 0;
       let rows = !isNaN(body.rows)? body.rows : 10;

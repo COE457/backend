@@ -149,11 +149,20 @@ class RoomTempHistory {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
+      if(!body.Atmosphere){ //  reject if no smartwatch was provided
+        reject(errors.missingKeys);
+        return;
+      }
 
       //  if trying to find range
       body.descending = (body.startkey || body.endkey)? false:true;
       if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
       if(body.endkey) body.endkey = Number(body.endkey);
+
+      if(!body.startkey && !body.endkey) {//  to get only the data of a certain smartwatch
+        body.startkey = [body.Atmosphere, {}];
+        body.endkey = [body.Atmosphere];
+      }
 
       //  default vs custom behaviour
       let page = !isNaN(body.page)? body.page : 0;
