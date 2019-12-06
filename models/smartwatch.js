@@ -181,7 +181,7 @@ class Smartwatch {
    */
   update(body) {
     return new Promise(async (resolve, reject) => {
-      if (!((body._id && body._rev) || body.serialNumber)) {
+      if (!((body._id && body._rev) || body._id || body.serialNumber)) {
         //  in case not enough parameters were provided
         reject(errors.missingKeys); //  reject and return
         return;
@@ -189,7 +189,7 @@ class Smartwatch {
 
       // finding the document that will be edited
       let search = //  setting up the search term based on available data
-        body._id && body._rev
+        body._id 
           ? {
               docType: "Smartwatch",
               _id: body._id
@@ -202,8 +202,6 @@ class Smartwatch {
       //  deleting the rev in the body to avoid conflicts
       delete body._rev;
 
-      //  deleting Child to prevent changing child
-      if (body.Child) delete body.Child;
 
       try {
         var target = await db //  finding Smartwatches

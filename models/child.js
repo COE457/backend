@@ -55,13 +55,16 @@ class Child {
       }
 
       try {
-        //  grabbing all _id's of Parents in db
-        var ids = await db.get(body.Parent);
+        //  parent from db
+        var parent = await db.get(body.Parent);
+        var watch = await db.get(body.Smartwatch)
       } catch (err) {
         //  if parent doesn't exist
         reject(errors.notInTheDataBase(body.Parent));
         return;
       }
+
+
 
       //  delete extra keys from body
       let keys = Object.keys(body); //  body keys
@@ -76,6 +79,14 @@ class Child {
       //  adding entry to db
       try {
         var newChild = await db.insert(body);
+
+        //  activating smartwatch
+        const smartwatch = require('./smartwatch');
+        const Smartwatch = new smartwatch();
+        Smartwatch.update({_id: body.Smartwatch, active: true}).catch(err => {
+          console.log('err: ', err);
+
+        });
         resolve(newChild); //  resolving the promise and returning newChild
       } catch (err) {
         //  catch db errors
@@ -117,7 +128,7 @@ class Child {
               docType: "Child",
               name: body.name
             },
-            fields: ["_id", "_rev"]
+            fields: ["_id", "_rev", "Smartwatch"]
           });
           if (target.docs.length == 0) {
             //  reject in case of no results
@@ -126,12 +137,15 @@ class Child {
           }
           const _id = target.docs[0]._id;
           const _rev = target.docs[0]._rev;
+          const watch = target.docs[0].Smartwatch;
           const deletedChild = await db.destroy(_id, _rev); //  attempt to destroy
 
-          // deleting smartwatch
-          // const smartwatch = require('./smartwatch');
-          // const Smartwatch = new smartwatch();
-          // Smartwatch.destroy({_id: this.Smartwatch});
+          //  deactivating smartwatch
+          const smartwatch = require('./smartwatch');
+          const Smartwatch = new smartwatch();
+          Smartwatch.update({_id: watch, active: false}).catch(err => {
+            console.log('err: ', err);
+          });
           
           resolve(deletedChild);
           return;
