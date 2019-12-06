@@ -11,7 +11,8 @@ const docs = [ //  types of docs that will use MQTT
   "locationHistory",
   "heartRateHistory",
   "lightSensorHistory",
-  "roomTempHistory"
+  "roomTempHistory",
+  "objectHistory"
 ];
 const controllers = {}; //  to hold the objects from ../models
 docs.forEach(item => {
