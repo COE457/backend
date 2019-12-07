@@ -10,7 +10,7 @@ const errors = require("../utils/errorMessages"); //  for unified error messages
 class LocationHistory {
   constructor() {
     //  setting the required keys
-    this.columns = ["location", "currentlyThere", "date"];
+    this.columns = ["location", "date"];
     this.owner = ["Smartwatch"];
   }
   /**
@@ -39,7 +39,7 @@ class LocationHistory {
         //  grabbing all names in db
         var names = await db.find({
           selector: { docType: "LocationHistory" },
-          fields: ["location", "currentlyThere", "date"]
+          fields: ["location", "date"]
         });
       } catch (err) {
         //  catch db errors

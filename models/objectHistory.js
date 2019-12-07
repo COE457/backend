@@ -11,7 +11,6 @@ class ObjectHistory {
   constructor() {
     //  setting the required keys
     this.columns = ["location", "img", "date"];
-    this.owner = ["Atmosphere"];
   }
   /**
    * @function create
@@ -97,10 +96,6 @@ class ObjectHistory {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if(!body.Smartwatch){ //  reject if no smartwatch was provided
-        reject(errors.missingKeys);
-        return;
-      }
 
       //  if trying to find range
       body.descending = (body.startkey || body.endkey)? false:true; //  data is ascending only and only if a range is requested
@@ -108,10 +103,6 @@ class ObjectHistory {
       if(body.endkey) body.endkey = [body.Smartwatch, Number(body.endkey)];
 
 
-      if(!body.startkey && !body.endkey) {//  to get only the data of a certain smartwatch
-        body.startkey = [body.Smartwatch, {}];
-        body.endkey = [body.Smartwatch];
-      }
       
       //  default vs custom behaviour
       let page = !isNaN(body.page)? body.page : 0;

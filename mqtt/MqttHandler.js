@@ -12,7 +12,9 @@ const docs = [ //  types of docs that will use MQTT
   "heartRateHistory",
   "lightSensorHistory",
   "roomTempHistory",
-  "objectHistory"
+  "objectHistory",
+  "equipmentHistory",
+  "panicHistory"
 ];
 const controllers = {}; //  to hold the objects from ../models
 docs.forEach(item => {
@@ -46,16 +48,28 @@ class MqttHandler {
     });
 
     // mqtt subscriptions
-    this.mqttClient.subscribe("sensors/#", { qos: 0 }); //  listening to all topics under sensors/
+    this.mqttClient.subscribe("childMonitor/sensors/#", { qos: 0 }); //  listening to all topics under sensors/
 
     this.mqttClient.on("message", function(topic, message) { //  when message arrives
       message = message.toString(); //  store it as a string 
-      if (docs.includes(topic.split("/")[1])) { //  check if message is from a required topic
-        controllers[topic.split("/")[1]] //  use the controller associated with the topic 
-          .create(JSON.parse(message)) //  use the message to 
+      console.log('message: ', message);
+      if (docs.includes(topic.split("/")[3])) { //  check if message is from a required topic
+        let body = JSON.parse(message);
+        if(topic.split("/")[2] !== "NoWatch"){
+          console.log('topic.split("/")[2]: ', topic.split("/")[2]);
+          body.Smartwatch = topic.split("/")[2];
+        }
+        console.log('body: ', body);
+        controllers[topic.split("/")[3]] //  use the controller associated with the topic 
+          .create(body) //  use the message to 
+          .then(i =>{
+            console.log('i: ', i);
+
+          })
           .catch(err => { //  on error 
-            console.log('err: ', err);
-            
+            console.log('in topic: ', topic);
+            console.log('message: ', message);
+            console.log('err: ', err);            
           });
       }
     });

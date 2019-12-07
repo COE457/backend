@@ -11,8 +11,8 @@ const errors = require("../utils/errorMessages"); //  for unified error messages
 class RoomTempHistory {
   constructor() {
     //  setting the required keys
-    this.columns = ["date","reading"];
-    this.owner = ["Atmosphere"];
+    this.columns = ["date","reading", "location"];
+    //this.owner = ["Atmosphere"];
   }
   /**
    * @function create
@@ -29,39 +29,39 @@ class RoomTempHistory {
       //  checking for missing keys
       if (
         !this.columns
-          .concat(this.owner)
+          // .concat(this.owner)
           .every(item => Object.keys(body).includes(item))
       ) {
         reject(errors.missingKeys); //  exit the function and return a promise reject
         return; //  exiting the function
       }
 
-      try {
-        //  grabbing all locations in db
-        var readings = await db.find({
-          selector: { docType: "RoomTempHistory" },
-          fields: ["date","reading"]
-        });
-      } catch (err) {
-        //  catch db errors
-        reject(errors.databaseError(err));
-        return;
-      }
+      // try {
+      //   //  grabbing all locations in db
+      //   var readings = await db.find({
+      //     selector: { docType: "RoomTempHistory" },
+      //     fields: ["date","reading"]
+      //   });
+      // } catch (err) {
+      //   //  catch db errors
+      //   reject(errors.databaseError(err));
+      // //   return;
+      // }
 
-      //  checking for duplicate location
-      if (readings.docs.map(item => item.date).includes(body.date)) {
-        reject(errors.duplicate("date", body.date)); //  reject duplicate entry
-        return; //  exiting the function
-      }
+      // //  checking for duplicate location
+      // if (readings.docs.map(item => item.date).includes(body.date)) {
+      //   reject(errors.duplicate("date", body.date)); //  reject duplicate entry
+      //   return; //  exiting the function
+      // }
 
-      try {
-        //  grabbing all _id's of Atmospheres in db
-        var ids = await db.get(body.Atmosphere);
-      } catch (err) {
-        //  if atmosphere doesn't exist
-        reject(errors.notInTheDataBase(body.Atmoshphere));
-        return;
-      }
+      // try {
+      //   //  grabbing all _id's of Atmospheres in db
+      //   var ids = await db.get(body.Atmosphere);
+      // } catch (err) {
+      //   //  if atmosphere doesn't exist
+      //   reject(errors.notInTheDataBase(body.Atmoshphere));
+      //   return;
+      // }
 
       //  delete extra keys from body
       let keys = Object.keys(body); //  body keys
@@ -149,20 +149,17 @@ class RoomTempHistory {
    */
   read(body) {
     return new Promise(async (resolve, reject) => {
-      if(!body.Atmosphere){ //  reject if no smartwatch was provided
-        reject(errors.missingKeys);
-        return;
-      }
+
 
       //  if trying to find range
       body.descending = (body.startkey || body.endkey)? false:true;
       if(body.startkey) body.startkey = Number(body.startkey); //  making sure keys are numbers 
       if(body.endkey) body.endkey = Number(body.endkey);
 
-      if(!body.startkey && !body.endkey) {//  to get only the data of a certain smartwatch
-        body.startkey = [body.Atmosphere, {}];
-        body.endkey = [body.Atmosphere];
-      }
+      // if(!body.startkey && !body.endkey) {//  to get only the data of a certain smartwatch
+      //   body.startkey = [body.Atmosphere, {}];
+      //   body.endkey = [body.Atmosphere];
+      // }
 
       //  default vs custom behaviour
       let page = !isNaN(body.page)? body.page : 0;
