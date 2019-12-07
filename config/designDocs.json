@@ -3,13 +3,16 @@
         "_id": "_design/sortedSensors",
         "views": {
             "LocationHistory": {
-                "map": "function (doc) {\n  if (doc.docType === \"LocationHistory\"){\n    emit([doc.Smartwatch, doc.date], [doc.currentlyThere, doc.location]); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"LocationHistory\"){\n    if(doc.location[0] !== \"n/a\"){\n      emit([doc.Smartwatch, doc.date], doc.location); \n    }\n  }\n}"
+            },
+            "ObjectHistory": {
+                "map": "function (doc) {\n  if (doc.docType === \"ObjectHistory\"){\n    emit([doc.location, doc.date], doc.img); \n  }\n}"
             },
             "HeartRateHistory": {
-                "map": "function (doc) {\n  if (doc.docType === \"HeartRateHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.reading]); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"HeartRateHistory\"){\n    if (parseFloat(doc.reading) > 0){\n      emit([doc.Smartwatch, doc.date], [doc.reading[1], parseFloat(doc.reading[0])]); \n    }\n  }\n}"
             },
             "EquipmentHistory": {
-                "map": "function (doc) {\n  if (doc.docType === \"EquipmentHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.equipped]); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"EquipmentHistory\"){\n    emit([doc.Smartwatch, doc.date], doc.equipped === \"1\"); \n  }\n}"
             },
             "LightSensorHistory": {
                 "map": "function (doc) {\n  if (doc.docType === \"LightSensorHistory\"){\n    emit(doc.date, [doc.Atmosphere, doc.reading]); \n  }\n}"
@@ -18,15 +21,14 @@
                 "map": "function (doc) {\n  if (doc.docType === \"NoiseLevelHistory\"){\n    emit(doc.date, [doc.Atmosphere, doc.reading]); \n  }\n}"
             },
             "PanicHistory": {
-                "map": "function (doc) {\n  if (doc.docType === \"PanicHistory\"){\n    emit(doc.date, [doc.Smartwatch, doc.dismissed]); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"PanicHistory\"){\n    emit([doc.Smartwatch, doc.date], doc.dismissed); \n  }\n}"
             },
             "RoomTempHistory": {
-                "map": "function (doc) {\n  if (doc.docType === \"RoomTempHistory\"){\n    emit(doc.date, [doc.Atmosphere, doc.reading]); \n  }\n}"
+                "map": "function (doc) {\n  if (doc.docType === \"RoomTempHistory\"){\n    emit(doc.date, doc.reading); \n  }\n}"
             }
         },
         "language": "javascript"
     },
-
     "smartwatchRelated": {
         "_id": "_design/smartwatchRelated",
         "views": {
@@ -39,6 +41,4 @@
         },
         "language": "javascript"
     }
-
-
 }
