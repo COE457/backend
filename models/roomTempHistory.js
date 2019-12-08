@@ -12,7 +12,6 @@ class RoomTempHistory {
   constructor() {
     //  setting the required keys
     this.columns = ["date","reading", "location"];
-    //this.owner = ["Atmosphere"];
   }
   /**
    * @function create
@@ -36,32 +35,6 @@ class RoomTempHistory {
         return; //  exiting the function
       }
 
-      // try {
-      //   //  grabbing all locations in db
-      //   var readings = await db.find({
-      //     selector: { docType: "RoomTempHistory" },
-      //     fields: ["date","reading"]
-      //   });
-      // } catch (err) {
-      //   //  catch db errors
-      //   reject(errors.databaseError(err));
-      // //   return;
-      // }
-
-      // //  checking for duplicate location
-      // if (readings.docs.map(item => item.date).includes(body.date)) {
-      //   reject(errors.duplicate("date", body.date)); //  reject duplicate entry
-      //   return; //  exiting the function
-      // }
-
-      // try {
-      //   //  grabbing all _id's of Atmospheres in db
-      //   var ids = await db.get(body.Atmosphere);
-      // } catch (err) {
-      //   //  if atmosphere doesn't exist
-      //   reject(errors.notInTheDataBase(body.Atmoshphere));
-      //   return;
-      // }
 
       //  delete extra keys from body
       let keys = Object.keys(body); //  body keys

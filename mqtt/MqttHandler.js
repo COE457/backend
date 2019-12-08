@@ -52,7 +52,6 @@ class MqttHandler {
 
     this.mqttClient.on("message", function(topic, message) { //  when message arrives
       message = message.toString(); //  store it as a string 
-      console.log('message: ', message);
       if (docs.includes(topic.split("/")[3])) { //  check if message is from a required topic
         let body = JSON.parse(message);
         if(topic.split("/")[2] !== "NoWatch"){
